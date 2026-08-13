@@ -193,3 +193,14 @@ RoadGuard-AI/
 ├── notebooks/
 ├── models/
 └── presentation/
+
+
+## Pre-trained Models
+
+The trained models are not included directly in this repository because of file size limitations.
+
+The project uses:
+
+- Eye Model: `eye_model.keras` https://drive.google.com/file/d/16flKjMzD1wzE-gAWv9FKXiCCoJQkQ54s/view?usp=drive_link
+- Mouth Model: `mouth_model.keras`   https://drive.google.com/file/d/1GNjbvq1Wty7vv_XUQSz0w1TguwIcnTYL/view?usp=drive_link
+- Face Detector: `face_detection_yunet_2023mar.onnx`    https://drive.google.com/file/d/1FUaHh3XB8J5RsAb2IYsM1hPrqLBzZqOJ/view?usp=drive_link
