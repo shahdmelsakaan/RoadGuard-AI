@@ -2,32 +2,40 @@
 
 ## Driver Drowsiness Detection Using Computer Vision and Deep Learning
 
-RoadGuard AI is a real-time driver drowsiness detection system
-that analyzes the driver's eye and mouth states using computer vision
-and deep learning.
+RoadGuard AI is an AI-based driver drowsiness detection system that analyzes the driver's eye and mouth states to detect possible signs of drowsiness.
 
-## Project Overview
+The system uses two deep learning models:
 
-The system uses two lightweight deep learning models:
+- Eye Model: Detects Closed Eyes / Open Eyes.
+- Mouth Model: Detects No Yawn / Yawn.
 
-- Eye Model: Detects Open Eyes / Closed Eyes.
-- Mouth Model: Detects Yawn / No Yawn.
+The predictions from both models are combined to determine the driver's final state.
 
-The predictions from both models are combined to determine the
-driver's drowsiness state.
+---
 
-## System Architecture
+## Problem
+
+Driver drowsiness is a major safety problem because fatigue can reduce a driver's reaction time and increase the risk of accidents.
+
+RoadGuard AI aims to provide an automated system that can analyze facial features and identify possible signs of driver drowsiness.
+
+---
+
+## Project Workflow
 
 The system follows these main steps:
 
-1. Capture video frames from a camera.
-2. Detect the driver's face using OpenCV YuNet.
-3. Extract facial landmarks.
-4. Extract Eye and Mouth Regions of Interest (ROIs).
-5. Pass the Eye ROI to the Eye Model.
-6. Pass the Mouth ROI to the Mouth Model.
-7. Combine both predictions using decision logic.
-8. Generate a drowsiness alert when necessary.
+1. Load and preprocess the eye and mouth datasets.
+2. Train the Eye and Mouth deep learning models.
+3. Apply Transfer Learning using MobileNetV2.
+4. Fine-tune the models on the drowsiness dataset.
+5. Detect the driver's face using YuNet.
+6. Extract the Eye and Mouth Regions of Interest (ROIs).
+7. Classify the eye and mouth states.
+8. Combine the predictions using decision logic.
+9. Generate the final drowsiness state.
+
+---
 
 ## AI Models
 
@@ -35,40 +43,69 @@ The system follows these main steps:
 
 The Eye Model performs binary classification:
 
-- Open Eyes
 - Closed Eyes
+- Open Eyes
+
+The eye images are resized to 64 × 64 and processed as grayscale images.
 
 ### Mouth Model
 
 The Mouth Model performs binary classification:
 
-- Yawn
 - No Yawn
+- Yawn
 
-Both models use Transfer Learning with MobileNetV2 and Fine-Tuning.
+The mouth images are resized to 64 × 64 and processed as RGB images.
+
+---
+
+## Deep Learning Architecture
+
+The project uses MobileNetV2 as a pre-trained backbone with ImageNet weights.
+
+A custom classification head is added using:
+
+- Global Average Pooling
+- Dense layer with 128 neurons
+- ReLU activation
+- Dropout with 50%
+- Sigmoid output layer
+
+Transfer Learning and Fine-Tuning are used to adapt the pre-trained models to the drowsiness detection task.
+
+---
 
 ## Dataset
 
-The project uses the Kaggle Drowsiness Dataset.
+The project uses the Drowsiness Dataset from Kaggle.
 
-The data is divided into:
+The dataset is divided into:
 
 - Training set
 - Validation set
 - Test set
 
-Data augmentation is applied to reduce overfitting.
+The dataset contains images for both eye-state and mouth-state classification.
 
-## Technologies Used
+---
 
-- Python
-- TensorFlow / Keras
-- MobileNetV2
-- OpenCV
-- YuNet
-- NumPy
-- Matplotlib
-- Scikit-learn
+## Data Preprocessing
+
+Images are resized to:
+
+64 × 64 pixels
+
+The project uses MobileNetV2 preprocessing.
+
+Data augmentation is also applied using:
+
+- Random Horizontal Flip
+- Random Rotation
+- Random Zoom
+
+These techniques help improve model generalization and reduce overfitting.
+
+---
 
 ## Model Training
 
@@ -79,11 +116,19 @@ The models are trained using:
 - Accuracy Metric
 - Early Stopping
 
-Fine-tuning is performed using a small learning rate of 1e-5.
+Fine-tuning is performed using a small learning rate of:
 
-## Evaluation
+1e-5
 
-The models are evaluated using:
+The last 30 layers of the pre-trained backbone are fine-tuned while earlier layers remain frozen.
+
+---
+
+## Model Evaluation
+
+The models are evaluated using the test dataset.
+
+The evaluation includes:
 
 - Test Accuracy
 - Precision
@@ -92,16 +137,59 @@ The models are evaluated using:
 - Classification Report
 - Confusion Matrix
 
+---
+
+## Face Detection
+
+The system uses OpenCV YuNet for face detection.
+
+YuNet detects the driver's face and provides facial landmarks.
+
+These landmarks are used to extract:
+
+- Eye Region of Interest
+- Mouth Region of Interest
+
+The extracted regions are then passed to the corresponding AI models.
+
+---
+
+## Drowsiness Decision Logic
+
+The final state is determined using the Eye and Mouth predictions:
+
+| Eye State | Mouth State | Final Result |
+|-----------|-------------|--------------|
+| Closed | Yawn | DROWSY |
+| Closed | No Yawn | POSSIBLE DROWSINESS |
+| Open | Yawn | POSSIBLE DROWSINESS |
+| Open | No Yawn | ALERT |
+
+---
+
+## Technologies Used
+
+- Python
+- TensorFlow
+- Keras
+- MobileNetV2
+- OpenCV
+- YuNet
+- NumPy
+- Matplotlib
+- Scikit-learn
+
+---
+
 ## Project Structure
 
 ```text
 RoadGuard-AI/
-├── models/
-├── src/
-├── notebooks/
-├── data/
-├── results/
-├── presentation/
+│
 ├── README.md
 ├── requirements.txt
-└── .gitignore
+├── .gitignore
+│
+├── notebooks/
+├── models/
+└── presentation/
